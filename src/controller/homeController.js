@@ -23,6 +23,32 @@ let getHomepage = async (req, res) => {
         
     }
 
+    let deleteUser = async (req,res) => {
+        let userID = req.body.userId;
+        await pool.execute('delete from users where id = ?', [userID])
+        return res.redirect('/');
+    }
+    let getEditPage = async(req,res) => {
+        let id = req.params.id
+        let [user] = await pool.execute('select * from users where id = ?', [id]);
+       return res.render('update.ejs',{dataUser: user[0]}); //x <- y
+    }
+
+    let postUpdateUser = async(req, res) =>{
+
+        let {Firstname, Lastname, Address, email, Id } = req.body;
+        await pool.execute('update users set Firstname = ?, Lastname = ?, email = ?, address = ? where Id = ?',
+        [Firstname, Lastname, email, Address, Id]);
+
+        return res.redirect('/');
+    }
+    let getUploadFilePage = async(req,res) => {
+        return res.render('uploadFile.ejs')
+    }
+    let handleUploadFile = async(req,res) => {
+        
+    }
+
 module.exports = {
-    getHomepage, getDetailPage, createNewUser
+    getHomepage, getDetailPage, createNewUser, deleteUser, getEditPage, postUpdateUser, getUploadFilePage, handleUploadFile
 } 
